@@ -4,95 +4,36 @@
   href="https://fonts.googleapis.com/css2?family=Changa+One&display=swap"
   rel="stylesheet"
 />
-<style>
-  body {
-    background-color: black;
-    font-family: 'Changa One', cursive;
-  }
-</style>
+<link rel="stylesheet" href="alap.css">
 
-<div style="position: relative; display: inline-block">
-    <canvas></canvas>
-    <div id="gameOver" style="
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 72px;
-  color: white;
-  -webkit-text-stroke: 3px black;
-  flex-direction: column;
-  background: rgba(0,0,0,0.7);
-">
+<div id="gameContainer">
+     <canvas id="gameCanvas"></canvas>
+    <div id="gameOver">
   GAME OVER
-  <div style="margin-top: 20px; font-size: 24px;">Elért wave: <span id="finalWave">0</span></div>
+  <div class="score-display">Elért wave: <span id="finalWave">0</span></div>
   
-  <div style="margin-top: 20px;">
-    <input type="text" id="playerName" placeholder="Add meg a neved" style="
-      padding: 10px;
-      font-size: 20px;
-      width: 200px;
-    ">
+  <div>
+    <input type="text" id="playerName" placeholder="Add meg a neved"  class="player-input">
   </div>
   
-  <div style="margin-top: 20px; display: flex; gap: 10px;">
-    <button id="saveScoreBtn" style="
-      padding: 10px 20px;
-      font-size: 20px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    ">Mentés</button>
+  <div class="button-group">
+    <button id="saveScoreBtn"  class="game-button" >Mentés</button>
     
-    <button id="newGameBtn" style="
-      padding: 10px 20px;
-      font-size: 20px;
-      background: #2196F3;
-      color: white;
-      border: none;
-      cursor: pointer;
-    ">Új játék</button>
+    <button id="newGameBtn" class="game-button">Új játék</button>
   </div>
+
   
-  <div id="highscores" style="margin-top: 20px; font-size: 24px;"></div>
+  <div id="highscores"  class="score-display"></div>
 </div>
     </div>
     <div
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 400px;
-        height: 80px;
-        background: linear-gradient(
-          to left bottom,
-          rgba(0, 0, 0, 0.8),
-          rgba(0, 0, 0, 0),
-          rgba(0, 0, 0, 0)
-        );
-      "
-    ></div>
-    <div
-      style="
-        position: absolute;
-        top: 4px;
-        right: 8px;
-        font-size: 36px;
-        color: white;
-        -webkit-text-stroke: 2px black;
-        display: flex;
-        align-items: center;
-      "
-    >
+       class="top-gradient"></div>
+    <div class="stats-display">
       <!-- coins -->
-      <div style="display: flex; align-items: center; margin-right: 20px">
+         <div class="stats-container">
+      <div class="stat-item">
         <svg
-          style="width: 25px; color: gold; margin-right: 5px"
+         class="icon-small gold"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
           fill="currentColor"
@@ -106,9 +47,9 @@
         <div id="coins">100</div>
       </div>
       <!-- hearts -->
-      <div style="display: flex; align-items: center">
+      <div  class="stat-item">
         <svg
-          style="width: 35px; color: red; margin-right: 5px"
+          class="icon-large red"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -123,81 +64,40 @@
       </div>
     </div>
   </div>
-  <button id="normalTowerBtn">Normál torony</button>
-<button id="slowTowerBtn">Lassító torony</button>
-
-<div style="position: absolute; top: 4px; left: 8px;">
-  <button id="muteBtn" style="
-    background: rgba(0,0,0,0.5);
-    border: 2px solid white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-  ">🔊</button>
 </div>
-<div style="position: fixed; bottom: 10px; left: 10px; color: gray; font-size: 16px;">
+<div id="towerMenu" class="tower-menu">
+  <h3>Torony választása</h3>
+  <div class="tower-options">
+    <button class="tower-btn" data-type="normal" data-cost="50">
+      Normál torony (50 arany)
+    </button>
+    <button class="tower-btn" data-type="slow" data-cost="75">
+      Lassító torony (75 arany)
+    </button>
+  </div>
+  <div id="towerCostDisplay" class="cost-display"></div>
+</div>
+<div id="towerManagementMenu" class="tower-menu">
+  <button id="sellTowerBtn">Eladás</button>
+  <div id="towerInfo">Torony információ</div>
+</div>
+
+  <button id="muteBtn">🔊</button>
+
+<div  class="creator-info">
   Készítette: Tóth Gergely (A7FYRB)
 </div>
 
-<button id="helpBtn" style="position: absolute; top: 150px; left: 20px;">Súgó</button>
-<div id="helpText" style="display: none; position: absolute; top: 180px; left: 20px; color: white; background: rgba(0,0,0,0.7); padding: 10px; max-width: 300px;">
+
+<div id="helpText" >
   <h3>Játék útmutató</h3>
-  <p>- Kattints az üres csempékre tornyok építéséhez (50 arany)</p>
-  <p>- Lassító torony lassítja az ellenségeket</p>
+  <p>- Kattints az üres csempékre tornyok építéséhez (50 arany) a torony 20-at sebez</p>
+  <p>- Lassító torony lassítja az ellenségeket és 5-öt is sebez(75arany)</p>
   <p>- Az ellenségek legyőzéséért 25 arany jár</p>
 </div>
-<div id="waveCounter" style="
-  position: absolute;
-  top: 4px;
-  right: 250px;
-  font-size: 36px;
-  color: white;
-  -webkit-text-stroke: 2px black;
-">Wave: 1</div>
+<div id="waveCounter" >Wave: 1</div>
 
-<script>
-  document.getElementById('helpBtn').addEventListener('click', () => {
-    const help = document.getElementById('helpText');
-    help.style.display = help.style.display === 'none' ? 'block' : 'none';
-  });
-</script>
 
-<style>
-  #highscorePanel {
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 250px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    border: 2px solid #4CAF50;
-    font-family: 'Changa One', cursive;
-    max-height: 80vh;
-    overflow-y: auto;
-    z-index: 100;
-  }
-  
-  #highscorePanel h3 {
-    margin-top: 0;
-    color: #4CAF50;
-    text-align: center;
-    font-size: 24px;
-    -webkit-text-stroke: 1px black;
-  }
-  
-  .highscore-entry {
-    margin: 8px 0;
-    padding: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-  }
-</style>
 
 <div id="highscorePanel">
   <h3>Top 10 eredmények</h3>

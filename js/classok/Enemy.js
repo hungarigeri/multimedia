@@ -22,9 +22,9 @@ class Enemy extends Sprite {
         y: 0
       }
 
-       this.baseSpeed = 1 // Alap sebesség tárolása
-        this.speed = this.baseSpeed // Jelenlegi sebesség
-        this.slowTimer = 0 // Lassítás időzítője
+      this.baseSpeed = 1// Alap sebesség tárolása
+      this.currentSpeed = this.baseSpeed // Jelenlegi sebesség
+      this.slowTimer = 0 // Lassítás időzítője
     }
   
     draw() {
@@ -49,13 +49,19 @@ class Enemy extends Sprite {
   
       const pontok = ut[this.utindex]
       const yDistance = pontok.y - this.center.y
-      const xDisctance =  pontok.x - this.center.x
-      const angle = Math.atan2(yDistance,xDisctance)
+      const xDistance = pontok.x - this.center.x
+      const angle = Math.atan2(yDistance, xDistance)
       
-      const speed = 1
+      // Sebesség frissítése a slowTimer alapján
+      if (this.slowTimer > 0) {
+        this.currentSpeed = this.baseSpeed * 0.5 // 50%-os lassítás
+        this.slowTimer--
+      } else {
+        this.currentSpeed = this.baseSpeed // Normál sebesség
+      }
   
-      this.velocity.x = Math.cos(angle) * speed
-      this.velocity.y = Math.sin(angle) * speed
+      this.velocity.x = Math.cos(angle) * this.currentSpeed
+      this.velocity.y = Math.sin(angle) * this.currentSpeed
   
       this.position.x += this.velocity.x
       this.position.y += this.velocity.y
@@ -70,22 +76,9 @@ class Enemy extends Sprite {
           Math.abs(this.velocity.x) &&
         Math.abs(Math.round(this.center.y) - Math.round(pontok.y)) <
           Math.abs(this.velocity.y) &&
-          this.utindex < ut.length -1
+        this.utindex < ut.length - 1
       ) {
         this.utindex++
       }
-        // Sebesség frissítése
-       
-        
-        this.velocity.x = Math.cos(angle) * speed
-        this.velocity.y = Math.sin(angle) * speed
-
-        // Lassítás időzítő kezelése
-        if (this.slowTimer > 0) {
-            this.slowTimer--
-            if (this.slowTimer === 0) {
-                this.speed = this.baseSpeed // Sebesség visszaállítása
-            }
-        }
     }
   }

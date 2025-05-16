@@ -41,8 +41,8 @@ class SlowProjectile extends Projectile {
         this.slowFactor = 0.5 // Sebesség 50%-ra csökkentése
     }
   
-    update() {
-        if (this.hasHit) return
+  update() {
+        if (this.hasHit) return false
         
         super.update()
 
@@ -51,8 +51,7 @@ class SlowProjectile extends Projectile {
         const distance = Math.hypot(xDiff, yDiff)
 
         if (distance < this.enemy.radius + this.radius) {
-           this.enemy.speed = this.enemy.baseSpeed * this.slowFactor
-            this.enemy.slowTimer = this.slowDuration
+            this.enemy.slowTimer = this.slowDuration // Itt állítjuk be az időzítőt
             explosions.push(
                 new Sprite({
                     position: { x: this.position.x, y: this.position.y },
@@ -62,9 +61,8 @@ class SlowProjectile extends Projectile {
                 })
             )
             this.hasHit = true
-            return true // Jelezzük, hogy talált
+            return true
         }
         return false
     }
-  }
-  
+}
