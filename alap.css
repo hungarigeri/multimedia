@@ -1,0 +1,4 @@
+#saveScoreBtn:disabled {
+  cursor: not-allowed;
+  background-color: #cccccc !important;
+}
