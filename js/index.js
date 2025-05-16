@@ -146,11 +146,17 @@ function animate() {
 // Segédfüggvények
 function handleProjectile(building, i) {
   const projectile = building.projectiles[i];
-  const isSlowProjectile = projectile instanceof SlowProjectile;
+  
+  // Debug információk
+  console.log("Projectile type:", projectile.constructor.name);
+  console.log("Before hit - Enemy health:", projectile.enemy.health);
 
-  if (isSlowProjectile ? projectile.update() : projectile.update()) {
+  if (projectile.update()) { // Minden lövedék frissítése
     const enemy = projectile.enemy;
-    enemy.health -= isSlowProjectile ? 5 : 20;
+    const damage = projectile instanceof SlowProjectile ? 5 : 20;
+    enemy.health -= damage;
+    
+    console.log(`Hit! Damage: ${damage}, Remaining health: ${enemy.health}`);
 
     if (enemy.health <= 0) {
       const enemyIndex = enemies.indexOf(enemy);
@@ -158,20 +164,24 @@ function handleProjectile(building, i) {
         enemies.splice(enemyIndex, 1);
         coins += 25;
         document.querySelector("#coins").innerHTML = coins;
+        console.log("Enemy defeated");
       }
     }
 
-    if (!isMuted){
+    if (!isMuted) {
       enemyHitSound.currentTime = 0;
-enemyHitSound.play();
+      enemyHitSound.play();
     }
        
     explosions.push(new Sprite({
       position: { x: projectile.position.x, y: projectile.position.y },
-      imageSrc: isSlowProjectile ? "kepek/lovedek_explosion.png" : "kepek/explosion.png",
+      imageSrc: projectile instanceof SlowProjectile 
+        ? "kepek/lovedek_explosion.png" 
+        : "kepek/explosion.png",
       frames: { max: 4 },
       offset: { x: 0, y: 0 }
     }));
+    
     building.projectiles.splice(i, 1);
   }
 }
@@ -285,33 +295,23 @@ function checkBuildingClick(x, y) {
 }
 
 function showTowerManagementMenu(x, y, building) {
-  selectedBuilding = building;
-  
-  // Először láthatóvá tesszük a menüt a méretek kiszámolásához
-  towerManagementMenu.style.display = 'block';
-  
-  // Most már lekérhetjük a helyes méreteket
-  const menuWidth = towerManagementMenu.offsetWidth;
-  const menuHeight = towerManagementMenu.offsetHeight;
-  
-  // Pozíció számítása
-  const adjustedX = Math.min(x, window.innerWidth - menuWidth - 10);
-  const adjustedY = Math.min(y, window.innerHeight - menuHeight - 10);
-  
-  // Frissítjük a pozíciót
-  towerManagementMenu.style.left = `${adjustedX}px`;
-  towerManagementMenu.style.top = `${adjustedY}px`;
-  
   // Tartalom frissítése
   towerInfo.innerHTML = `
     <p>${building instanceof SlowTower ? 'Lassító' : 'Normál'} torony</p>
     <p>Sebzés: ${building.damage || 20}</p>
     ${building instanceof SlowTower ? `<p>Lassítás: ${building.slowFactor * 100}%</p>` : ''}
   `;
-  
-  console.log("Tower management menu shown at:", adjustedX, adjustedY, 
-             "Size:", menuWidth, "x", menuHeight);
+
+  // Osztály hozzáadása a megjelenítéshez
+  towerManagementMenu.classList.add('visible');
+  towerManagementMenu.style.left = `${x}px`;
+  towerManagementMenu.style.top = `${y}px`;
+  selectedBuilding = building;
 }
+
+;
+
+
 
 // Eseménykezelők
 document.querySelectorAll('.tower-btn').forEach(btn => {
@@ -375,26 +375,45 @@ window.addEventListener('click', (e) => {
   }
 });
 
-sellTowerBtn.addEventListener('click', () => {
+
+sellTowerBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  console.log("Sell button clicked"); // Debug üzenet
+  
   if (selectedBuilding) {
-    const refund = Math.floor((selectedBuilding instanceof SlowTower ? 75 : 50) * 0.5);
+    console.log("Selling tower:", selectedBuilding);
+    
+    // Visszatérítés számítása
+    const cost = selectedBuilding instanceof SlowTower ? 75 : 50;
+    const refund = Math.floor(cost * 0.5);
     coins += refund;
     document.querySelector("#coins").innerHTML = coins;
     
+    // Épület eltávolítása
     const index = buildings.indexOf(selectedBuilding);
-    if (index > -1) buildings.splice(index, 1);
+    if (index > -1) {
+      buildings.splice(index, 1);
+      console.log("Tower removed from buildings array");
+    }
     
+    // Tile felszabadítása
     const tile = csempek.find(t => 
       t.position.x === selectedBuilding.position.x && 
       t.position.y === selectedBuilding.position.y
     );
-    if (tile) tile.isOccupied = false;
+    if (tile) {
+      tile.isOccupied = false;
+      console.log("Tile freed up");
+    }
     
-    towerManagementMenu.style.display = 'none';
+    // Menü bezárása
+    towerManagementMenu.classList.remove('visible');
     selectedBuilding = null;
+    console.log("Menu closed and selection cleared");
+  } else {
+    console.log("No building selected to sell");
   }
 });
-
 // Játék indítása
 displayHighscores();
 spawnEnemies(enemyCount);

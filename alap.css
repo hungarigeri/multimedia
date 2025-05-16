@@ -261,6 +261,9 @@ body {
   font-family: 'Changa One', cursive;
   width: 250px;
 }
+.tower-menu.visible {
+  display: block !important;  /* most már használhatunk !important-et itt */
+}
 
 .tower-options {
   display: flex;
@@ -307,16 +310,12 @@ body {
 }
 #towerManagementMenu {
   position: fixed;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid gold;
-  border-radius: 10px;
-  padding: 15px;
-  color: white;
-  display: none;
-  width: 200px; /* Explicit szélesség */
-  min-height: 100px; /* Minimális magasság */
-  box-sizing: border-box; /* A padding ne változtassa meg a méreteket */
+  right: 500px;
+  top: 100px;
+  background: red;
+  z-index: 99999;
+  width: 200px;
+  height: 150px;
 }
 
 #towerManagementMenu button {
